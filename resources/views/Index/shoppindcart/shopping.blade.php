@@ -75,7 +75,13 @@
 				</div>
 				<div class="jiesuan fr">
 					<div class="jiesuanjiage fl">合计（不含运费）：<span id="money">0元</span></div>
-					<div class="jsanniu fr"><input class="jsan" type="button" name="jiesuan"  value="去结算"/></div>
+					<div class="jsanniu fr">
+						@if(empty($thisUser))
+							<input class="jsan" type="button" name="loginNo" value="请登录再结算"/>
+						@else
+							<input class="jsan" type="button" name="jiesuan"  value="去结算"/>
+						@endif
+					</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -96,6 +102,11 @@
 </html>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
+
+	//未登录
+	$("input[name='loginNo']").on('click',function () {
+		alert('请先登录');
+    });
 
 	//结算订单
 	$("input[name='jiesuan']").on('click',function () {
@@ -130,6 +141,7 @@
 		$.get('/inputorder',{data:data,carid:carid},function (jsonMsg) {
 			if(jsonMsg.errorCode == 200){
 			    alert('提交成功');
+			    location.href = "/order/list";
 				console.log(jsonMsg.data);
 			}else if(jsonMsg.errorCode == 501){
 			    alert('请先登录');

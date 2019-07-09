@@ -25,7 +25,7 @@
             </ul>
         </div>
         <div class="right fr">
-            <div class="gouwuche fr"><a href="shopping">购物车</a></div>
+            <div class="gouwuche fr"><a href="/shopping">购物车</a></div>
             <div class="fr">
                 <ul>
                     <li>

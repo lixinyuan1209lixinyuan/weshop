@@ -82,7 +82,7 @@
 				{{--<div class="bot mt20 ft20 ftbc">总计：2499元</div>--}}
 			{{--</div>--}}
 			<div class="xiadan ml20 mt20">
-					<input class="jrgwc"  type="button" name="jrgwc" value="立即选购" />
+					{{--<input class="jrgwc"  type="button" name="jrgwc" value="立即选购" />--}}
 					<input class="jrgwc" type="button" name="addshopcar" value="加入购物车" data-goods_id="{{$goodsDetail->goods_id}}"/>
 					<input class="jrgwc" type="button" name="shoucang" data-goods_id="{{$goodsDetail->goods_id}}" data-goods_img="{{$goodsDetail->goods_img}}" value="收藏此商品" style="margin-top: 30px;" />
 			</div>

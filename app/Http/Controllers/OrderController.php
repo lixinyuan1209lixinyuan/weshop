@@ -28,8 +28,55 @@ class OrderController extends Controller
 
     }
 
+    //订单支付成功 -> 处理订单和优惠券状态
+    public function handleAliPay()
+    {
+        $data = \request()->input();
+        if(empty($data)){
+            return;
+        }
+
+//        var_dump($data);die();
+
+        //用户id
+        $u_id = \request()->session()->get('thisUser')['data']['uid'];
+        //订单id
+        $order_id = $data['out_trade_no'];
+        //优惠券信息
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1',6379);
+        $discount_id = $redis->get($order_id);
+        //实际支付价格
+        $actual_price = $data['total_amount'];
+
+        DB::beginTransaction();
+
+        DB::table('user_discount')
+            ->where('id','=',$discount_id)
+            ->where('u_id','=',$u_id)
+            ->update(['status' => 2]);
+
+        DB::table('order')
+            ->where([
+                'uid' => $u_id,
+                'o_num' => $order_id,
+            ])
+            ->update([
+                'o_status' => 2,
+                'actual_price' => $actual_price
+            ]);
+
+        DB::commit();
+
+    }
+
     public function list(){
 
+<<<<<<< HEAD
+=======
+        $this->handleAliPay();
+
+>>>>>>> jiaxinchen-master
         $res = \request()->session()->get('thisUser');
         $uid = \request()->session()->get('thisUser')['data']['uid'];
         $data = DB::table('order')
@@ -53,6 +100,8 @@ class OrderController extends Controller
 
         $res = \request()->session()->get('thisUser');
         $o_id = \request()->input('o_id');
+
+        //订单信息
         $data = DB::table('order')
             ->leftJoin('ordergoods',function($join){
                 $join->on('order.o_id','=','ordergoods.order_id');
@@ -63,16 +112,53 @@ class OrderController extends Controller
             ->leftJoin('goods',function($join){
                 $join->on('ordergoods.goods_id','=','goods.goods_id');
             })
-//            ->select('goods_img','goods_')
             ->where(
                 [
                     'o_id'=>$o_id,
                     'uid'=>$res['data']['uid']
                 ]
             )
+            ->select(DB::raw('
+                   weshop_order.o_id,
+                   weshop_order.o_status,
+                   weshop_order.o_price,
+                   weshop_order.o_addtime,
+                   weshop_order.o_num,
+                   
+                   weshop_status.status,
+                   
+                   weshop_ordergoods.goods_id,
+                   
+                   weshop_goods.goods_name,
+                   weshop_goods.goods_img,
+                   weshop_goods.goods_price
+            '))
             ->get();
+//        var_dump($data);die();
 
-        return view('index.order.details',['data'=>$data,'thisUser'=>$res['data']]);
+        //查询优惠券信息
+        $discount = DB::table('user_discount')
+            ->where('u_id','=',$res['data']['uid'])
+            ->where('user_discount.status','=',1)
+
+            ->leftJoin('discount',function ($query){
+                $query->on('user_discount.discount_id','=','discount.id');
+            })
+
+            ->select(DB::raw('
+                weshop_user_discount.id,
+                weshop_user_discount.discount_id,
+                weshop_discount.money,
+                weshop_discount.name
+            '))
+            ->where('discount.end','>',time())
+            ->get();
+//        var_dump($discount);die();
+
+        return view('index.order.details',[
+            'data'=>$data,'thisUser'=>$res['data'],
+            'discount' => $discount,
+        ]);
     }
 
     public function inputorder()

@@ -42,7 +42,7 @@
 							<div >
 								<div class="">
                                     <a href="details?o_id={{$v->o_id}}"><input style="width: 100px;height: 50px;background-color: red;font-size: 20px;margin-top: 35px;" type="button"  value="去结算"/></a>
-                                    <a href="details?o_id={{$v->o_id}}"><input style="width: 100px;height: 50px;background-color: #38ff2c;font-size: 20px;margin-top: 35px;margin-left: 5px;" type="button" value="查看详情"/></a>
+                                    {{--<a href="details?o_id={{$v->o_id}}"><input style="width: 100px;height: 50px;background-color: #38ff2c;font-size: 20px;margin-top: 35px;margin-left: 5px;" type="button" value="查看详情"/></a>--}}
                                 </div>
 							</div>
 					</div>
