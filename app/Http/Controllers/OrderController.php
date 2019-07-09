@@ -9,7 +9,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Controllers\Model\Goods;
 class OrderController extends Controller
 {
 
@@ -29,9 +29,9 @@ class OrderController extends Controller
     }
 
     public function list(){
+
         $res = \request()->session()->get('thisUser');
         $uid = \request()->session()->get('thisUser')['data']['uid'];
-
         $data = DB::table('order')
 
             ->where('uid',$uid)
@@ -46,8 +46,6 @@ class OrderController extends Controller
                 $v->goods_img = $child->goods_img;
             }
         }
-//        echo "<pre>";
-//        print_r($data);die;
         return view('index.order.list',['data'=>$data,'thisUser'=>$res['data']]);
     }
 
